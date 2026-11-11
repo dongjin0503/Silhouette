@@ -1,4 +1,4 @@
-# 📏 Silhouette 협업 컨벤션
+# 📏 Silhouette 협업 컨벤션 `작성자:서현수`
 
 팀원 모두가 같은 규칙으로 작업하기 위한 문서입니다.
 규칙을 바꾸고 싶으면 팀원과 합의 후 이 문서를 먼저 수정합니다.
@@ -10,8 +10,9 @@
 4. [이슈 규칙](#4-이슈-규칙)
 5. [PR 규칙](#5-pr-규칙)
 6. [작업 흐름](#6-작업-흐름)
-7. [보안 규칙](#7-보안-규칙)
-8. [자주 하는 실수 대처법](#8-자주-하는-실수-대처법)
+7. [네이밍 규칙](#7-네이밍-규칙)
+8. [보안 규칙](#8-보안-규칙)
+9. [자주 하는 실수 대처법](#9-자주-하는-실수-대처법)
 
 ---
 
@@ -96,7 +97,7 @@ type: 제목
 | `test` | 테스트 코드 추가/수정 | `test: 매칭 서비스 단위 테스트 추가` |
 | `chore` | 빌드, 설정, 패키지, .gitignore 등 | `chore: MySQL 의존성 추가` |
 | `design` | CSS, UI 디자인 수정 | `design: 프로필 카드 레이아웃 수정` |
-| `rename` | 파일/폴더명 변경 | `rename: UserDao를 UserRepository로 변경` |
+| `rename` | 파일/폴더명 변경 | `rename: MatchDao를 MatchDAO로 변경` |
 | `remove` | 파일 삭제 | `remove: 사용하지 않는 테스트 파일 삭제` |
 
 ### 커밋 규칙
@@ -152,7 +153,7 @@ type: 제목
 
 ### 머지 규칙
 
-- 머지는 **GIT담당자 서현수**의 승인 후 진행한다.
+- 머지는 **GIT 담당자 서현수**의 승인 후 진행한다.
 - 충돌(Conflict)이 있으면 PR 작성자가 **머지 전에 해결**한다.
 - 머지 방식은 **Squash and merge** 로 통일한다. (아래 설명 참고)
 - 머지 후 내 fork의 작업 브랜치를 삭제하고, **내 fork의 `main`을 원본과 동기화**한다.
@@ -281,7 +282,32 @@ git push origin --delete feat/12-blind-matching
 
 ---
 
-## 7. 보안 규칙
+## 7. 네이밍 규칙
+
+### 7-1. 클래스 이름
+
+계층별 접미사는 **앞글자 대문자**로 통일한다. (`Dao`, `Dto` ❌ → `DAO`, `DTO` ⭕)
+
+| 계층 | 접미사 | 예시 |
+|---|---|---|
+| Controller | `Controller` | `MatchController` |
+| Service | `Service` | `MatchService` |
+| DAO | `DAO` | `MatchDAO` |
+| DTO | `DTO` | `ProfileDTO` |
+| Entity / VO | 도메인 이름 | `User`, `Match` |
+
+### 7-2. DB 네이밍
+
+- 테이블, 컬럼: **snake_case, 소문자**
+- 테이블명은 **단수형** 통일 → `file`, `reply`
+- PK는 `seq`, FK는 `대상테이블_id` (예: `user_id`)
+- 생성/수정 시간 컬럼: `created_at`, `updated_at`
+
+예: `user`, `match_history`, `chat_room`
+
+---
+
+## 8. 보안 규칙
 
 - **비밀번호, API 키, DB 접속 정보는 절대 커밋하지 않는다.**
   - 한 번 올라가면 히스토리에 영원히 남는다. 지워도 소용없다.
@@ -292,7 +318,7 @@ git push origin --delete feat/12-blind-matching
 
 ---
 
-## 8. 자주 하는 실수 대처법
+## 9. 자주 하는 실수 대처법
 
 | 상황 | 해결 |
 |---|---|
@@ -314,4 +340,4 @@ git push origin --delete feat/12-blind-matching
 | 날짜 | 내용 | 작성자 |
 |---|---|---|
 | 2026.11.11 | 최초 작성 | 서현수|
-| 2026.11.11 | 라벨·코드 컨벤션 삭제, 커밋/머지 규칙 수정, Squash and merge 설명 추가 | 서현수|
+| 2026.11.11 | 라벨 삭제, 커밋/머지 규칙 수정, Squash and merge 설명 추가, 네이밍 규칙(7번)만 남기고 코드 컨벤션 정리 | 서현수|
