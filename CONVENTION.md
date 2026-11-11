@@ -18,9 +18,10 @@
 
 ## 1. 기본 원칙
 
-- `main`, `develop` 브랜치에 **직접 push 금지**. 반드시 PR을 통해 합친다.
+- 팀원은 원본 저장소(`dongjin0503/Silhouette`)를 **Fork**해서 작업한다. 원본에 직접 push하지 않는다.
+- 원본의 `main` 브랜치에는 **반드시 PR을 통해서만** 합친다.
 - 작업 시작 전 **이슈를 먼저 만든다.**
-- 작업 시작 전 **항상 최신 `develop`을 pull** 받는다.
+- 작업 시작 전에 **항상 내 fork를 `Sync fork`로 최신화**하고 로컬로 pull 받는다.
 - 모르겠으면 혼자 끙끙대지 말고 바로 팀원에게 물어본다.
 - 서로의 코드를 비판하지 않고 **코드에 대해서만** 이야기한다.
 
@@ -30,18 +31,19 @@
 
 ### 브랜치 구조
 
-| 브랜치 | 역할 | 직접 push |
+`develop` 브랜치는 만들지 않고, **`main` + 작업 브랜치** 두 종류로만 운영한다.
+
+| 브랜치 | 위치 | 역할 |
 |---|---|---|
-| `main` | 최종 제출/배포용. 항상 실행 가능한 상태 | ❌ |
-| `develop` | 개발 통합 브랜치. 기능이 모이는 곳 | ❌ |
-| `feat/*` 등 | 개인 작업 브랜치. `develop`에서 따서 작업 | ⭕ |
+| `main` | 원본 저장소 | 항상 실행 가능한 상태. 완성된 기능이 PR로 모이는 곳 |
+| `feat/*` 등 | **각자의 fork** | 개인 작업 브랜치. `main`에서 따서 작업 |
 
 ```
-main      ──●─────────────────────●──  (릴리즈 시점에만 merge)
-            \                     /
-develop   ───●───●───●───●───●───●────
-                  \     /
-feat/12-matching   ●───●
+원본 main  ──●─────●─────●─────●──
+              \     ↑     ↑
+               \    PR    PR
+내 fork         ●──●     ●──●
+              feat/12   fix/25
 ```
 
 ### 브랜치 이름 규칙
@@ -55,7 +57,7 @@ feat/12-matching   ●───●
 | `refactor` | 코드 구조 개선 | `refactor/30-user-service` |
 | `docs` | 문서 작업 | `docs/5-readme` |
 | `chore` | 설정, 빌드, 패키지 | `chore/3-project-setup` |
-| `hotfix` | `main`의 긴급 수정 | `hotfix/40-db-connection` |
+| `hotfix` | 급하게 고쳐야 하는 오류 | `hotfix/40-db-connection` |
 
 > ❌ `feat/내가만든기능`, `Feat/Matching`, `test`, `jin-work`
 > ⭕ `feat/12-blind-matching`
@@ -63,7 +65,8 @@ feat/12-matching   ●───●
 ### 브랜치 관리
 
 - 작업 브랜치는 **기능 하나당 하나**. 여러 기능을 한 브랜치에 섞지 않는다.
-- PR이 머지되면 작업 브랜치는 **삭제**한다.
+- 작업 브랜치는 항상 **최신 `main`에서** 새로 딴다.
+- PR이 머지되면 내 fork의 작업 브랜치는 **삭제**한다.
 - 브랜치 수명은 길어도 **3~4일**. 오래 끌수록 충돌이 커진다.
 
 ---
@@ -143,7 +146,7 @@ type: 제목
 
 ### PR 만드는 법
 
-- **base**: `develop` ← **compare**: 내 작업 브랜치
+- **base**: 원본 `dongjin0503/Silhouette`의 `main` ← **compare**: 내 fork의 작업 브랜치
 - 제목은 커밋 컨벤션과 동일하게: `feat: 블라인드 랜덤 매칭 구현`
 - PR 템플릿을 빠짐없이 채운다.
 - 관련 이슈를 연결한다: `closes #12` (머지되면 이슈 자동 종료)
@@ -163,7 +166,7 @@ type: 제목
 - 머지는 **PR 작성자 본인**이 승인 후 진행한다.
 - 머지 방식은 **Squash and merge** 로 통일한다. (히스토리가 깔끔해진다)
 - 머지 전 충돌(Conflict)이 없어야 한다.
-- 머지 후 작업 브랜치를 삭제한다.
+- 머지 후 내 fork의 작업 브랜치를 삭제하고, **내 fork의 `main`을 원본과 동기화**한다.
 
 ### PR 크기
 
@@ -174,18 +177,45 @@ type: 제목
 
 ## 6. 작업 흐름
 
+### 처음 한 번만 (초기 세팅)
+
+```bash
+# 1. GitHub에서 원본 저장소(dongjin0503/Silhouette)를 Fork
+
+# 2. 내 fork를 clone
+git clone https://github.com/내아이디/Silhouette.git
+cd Silhouette
+```
+
 ### 전체 흐름
 
 ```
-이슈 생성 → 브랜치 생성 → 작업/커밋 → push → PR 생성 → 리뷰 → 머지 → 브랜치 삭제
+이슈 생성 → Sync fork → 브랜치 생성 → 작업/커밋 → 내 fork로 push → 원본에 PR → 리뷰 → 머지 → Sync fork → 브랜치 삭제
 ```
 
-### 명령어 순서
+### 🔄 Sync fork (원본 최신 내용 받아오기)
+
+fork는 만든 시점의 복사본이라, 원본이 바뀌어도 **자동으로 따라오지 않는다.** 그래서 작업 전에 직접 동기화한다.
+
+1. GitHub에서 **내 fork 저장소** 페이지로 이동
+2. 파일 목록 위쪽의 **`Sync fork`** 버튼 클릭
+3. **`Update branch`** 클릭
+4. 내 컴퓨터(로컬)에도 반영한다.
 
 ```bash
-# 1. 최신 develop 받기
-git checkout develop
-git pull origin develop
+git checkout main
+git pull origin main
+```
+
+> ⚠️ `Sync fork`는 **GitHub에 있는 내 fork만** 최신으로 만든다. 로컬에는 `git pull origin main`을 꼭 해줘야 한다.
+> ⚠️ 버튼에 "This branch is up to date" 라고 나오면 이미 최신이라 할 일이 없다.
+
+### 작업할 때마다
+
+```bash
+# 1. (위의 Sync fork 먼저 하고) 로컬 main 최신화
+git checkout main
+git pull origin main
 
 # 2. 작업 브랜치 만들기 (이슈 번호 포함)
 git checkout -b feat/12-blind-matching
@@ -194,19 +224,48 @@ git checkout -b feat/12-blind-matching
 git add .
 git commit -m "feat: 블라인드 랜덤 매칭 구현"
 
-# 4. push 전에 develop 최신 내용 반영 (충돌 미리 해결)
-git pull origin develop
-
-# 5. push
+# 4. 내 fork로 push
 git push origin feat/12-blind-matching
 
-# 6. GitHub에서 PR 생성 (base: develop)
+# 5. GitHub에서 PR 생성
+#    내 fork의 feat/12-blind-matching → 원본의 main
 ```
+
+### 작업 중에 원본이 바뀌었다면
+
+다른 팀원의 PR이 머지되어 원본 `main`이 바뀌면, 내 브랜치에도 그 내용을 합쳐서 **PR 올리기 전에 충돌을 미리 해결**한다.
+
+```bash
+# 1. GitHub에서 Sync fork → Update branch
+# 2. 로컬 main 최신화
+git checkout main
+git pull origin main
+
+# 3. 내 작업 브랜치로 돌아와서 main 내용 합치기
+git checkout feat/12-blind-matching
+git merge main
+```
+
+### PR이 머지된 후
+
+1. GitHub에서 **Sync fork → Update branch** (내 fork의 `main`이 원본과 같아짐)
+2. 로컬 정리
+
+```bash
+git checkout main
+git pull origin main
+
+# 다 쓴 작업 브랜치 삭제
+git branch -d feat/12-blind-matching
+git push origin --delete feat/12-blind-matching
+```
+
+> 💡 PR 머지 직후 PR 페이지에 뜨는 **`Delete branch`** 버튼으로 fork의 브랜치를 지워도 된다. 이 경우 로컬 브랜치(`git branch -d`)만 지우면 된다.
 
 ### 하루 작업 루틴
 
-- **작업 시작 전**: `git checkout develop` → `git pull origin develop` → 작업 브랜치로 이동 후 `git merge develop`
-- **작업 종료 전**: 커밋 & push (로컬에만 두지 않는다)
+- **작업 시작 전**: Sync fork → `git pull origin main` → 작업 브랜치로 이동
+- **작업 종료 전**: 커밋 & 내 fork로 push (로컬에만 두지 않는다)
 
 ### 충돌(Conflict) 발생 시
 
@@ -324,6 +383,7 @@ com.silhouette
 | 엉뚱한 브랜치에서 작업했다 | `git stash` → 올바른 브랜치로 이동 → `git stash pop` |
 | 작업하던 걸 잠깐 치워두고 싶다 | `git stash` / 복구는 `git stash pop` |
 | 파일 하나의 변경을 되돌리고 싶다 | `git restore 파일명` |
+| 내 fork가 원본보다 뒤처졌다 | GitHub에서 `Sync fork` → `Update branch` 후, 로컬에서 `git pull origin main` |
 | 이미 push한 커밋을 되돌려야 한다 | 혼자 판단하지 말고 **팀에 먼저 공유** 후 `git revert` |
 
 > ⚠️ **`git push --force` 는 사용 금지.** 팀원의 작업이 날아갈 수 있다.
