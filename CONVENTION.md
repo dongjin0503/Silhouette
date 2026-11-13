@@ -331,7 +331,7 @@ git push origin --delete feat/C1-blind-matching
 
 ### 7-3. 자바 코드 기본 규칙
 
-- 클래스: `PascalCase` / 변수, 메서드: `camelCase` / 상수: `UPPER_SNAKE_CASE`
+- 클래스: `PascalCase` / 변수, 메서드: `camelCase`
 - 패키지: 소문자만 (예: `com.silhouette.match`)
 - 들여쓰기는 팀 IDE 설정에 맞추고, 임의로 포맷터를 바꾸지 않는다. (포맷만 바뀐 큰 변경은 `style:` 커밋으로 따로 올린다)
 
