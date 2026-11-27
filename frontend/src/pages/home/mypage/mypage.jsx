@@ -50,9 +50,9 @@ const DEFAULT_AVATAR =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
-            '<rect width="100" height="100" fill="#22201e"/>' +
-            '<circle cx="50" cy="38" r="18" fill="#ffd34e" opacity="0.9"/>' +
-            '<path d="M18 88c4-18 18-28 32-28s28 10 32 28z" fill="#ffd34e" opacity="0.9"/></svg>'
+        '<rect width="100" height="100" fill="#22201e"/>' +
+        '<circle cx="50" cy="38" r="18" fill="#ffd34e" opacity="0.9"/>' +
+        '<path d="M18 88c4-18 18-28 32-28s28 10 32 28z" fill="#ffd34e" opacity="0.9"/></svg>'
     );
 
 // ===== 기본 정보 규칙 (회원가입 signup.jsx와 같음) =====
@@ -530,7 +530,9 @@ function MyPage() {
     // 결제 내역 (M010) & 지갑 잔액
     const [payments, setPayments] = useState([]);
     const [paymentsLoading, setPaymentsLoading] = useState(false);
-    const [cancelingId, setCancelingId] = useState(null);
+    const [cancelTarget, setCancelTarget] = useState(null);     // 환불 팝업에 보여줄 결제 건
+    const [cancelProcessing, setCancelProcessing] = useState(false);
+    const [cancelResult, setCancelResult] = useState(null);       // { ok, message } 팝업 안에 표시
     const [wallet, setWallet] = useState(null);
 
     // 토스트 메시지
@@ -912,26 +914,36 @@ function MyPage() {
             });
     };
 
-    // 결제 취소(환불): 서버가 7일 이내 / 미사용 여부 등을 검증하고 PortOne 취소까지 처리
-    const handleCancelPayment = (p) => {
-        const name = p.productName || `채팅 이용권 ${p.ticketCount}개`;
-        const amount = Number(p.paymentAmount || 0).toLocaleString();
-        if (!window.confirm(`[${name}] 결제를 취소하고 ${amount}원을 환불받으시겠습니까?\n사용한 마일리지는 반환되고, 적립된 마일리지는 회수됩니다.`)) {
-            return;
-        }
-        setCancelingId(p.pgTransactionId);
-        Client.post('/api/ticket/cancel', { pgTransactionId: p.pgTransactionId })
+    // 환불 팝업: 결제 정보를 보여주고 [환불하기]를 누르면 환불 처리 (서버가 7일 이내/미사용 검증 + PortOne 취소)
+    const openCancelModal = (p) => {
+        setCancelResult(null);
+        setCancelTarget(p);
+    };
+
+    const closeCancelModal = () => {
+        if (cancelProcessing) return;
+        setCancelTarget(null);
+        setCancelResult(null);
+    };
+
+    const confirmCancelPayment = () => {
+        if (!cancelTarget || cancelProcessing) return;
+        setCancelProcessing(true);
+        Client.post('/api/ticket/cancel', { pgTransactionId: cancelTarget.pgTransactionId })
             .then(() => {
-                alert('결제가 취소되었습니다.');
+                setCancelResult({ ok: true, message: '결제가 취소되었습니다.' });
                 loadPayments();
                 loadWallet();
             })
             .catch((err) => {
                 console.error('결제 취소 실패:', err);
-                alert(err.response?.data?.message || '결제 취소 중 오류가 발생했습니다.');
+                setCancelResult({
+                    ok: false,
+                    message: err.response?.data?.message || '결제 취소 중 오류가 발생했습니다.',
+                });
             })
             .finally(() => {
-                setCancelingId(null);
+                setCancelProcessing(false);
             });
     };
 
@@ -1761,10 +1773,9 @@ function MyPage() {
                                                                     <button
                                                                         type="button"
                                                                         className={cx('btn-cancel-pay')}
-                                                                        onClick={() => handleCancelPayment(p)}
-                                                                        disabled={cancelingId === p.pgTransactionId}
+                                                                        onClick={() => openCancelModal(p)}
                                                                     >
-                                                                        {cancelingId === p.pgTransactionId ? '취소 중...' : '결제취소'}
+                                                                        결제취소
                                                                     </button>
                                                                 ) : '-'}
                                                             </td>
@@ -1849,6 +1860,98 @@ function MyPage() {
                             {editingScheduleId !== null ? '수정 저장' : '일정 저장'}
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* ===== 결제 취소(환불) 팝업 ===== */}
+            <div className={cx('modal-overlay', cancelTarget && 'open')} onClick={(e) => e.target === e.currentTarget && closeCancelModal()}>
+                <div className={cx('modal-window')}>
+                    <div className={cx('modal-header')}>
+                        <h3 className={cx('modal-title')}>결제 취소</h3>
+                        <button className={cx('modal-close-btn')} onClick={closeCancelModal}>&times;</button>
+                    </div>
+
+                    {/* 환불 처리 결과 (팝업 안에 표시) */}
+                    {cancelTarget && cancelResult && (
+                        <div style={{ textAlign: 'center', padding: '12px 0 4px' }}>
+                            <p style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 22, color: cancelResult.ok ? 'inherit' : '#ef4444' }}>
+                                {cancelResult.message}
+                            </p>
+                            <button className={cx('btn-primary-gradient')} style={{ width: '100%' }} onClick={closeCancelModal}>
+                                확인
+                            </button>
+                        </div>
+                    )}
+
+                    {/* 환불 전 결제 정보 + [취소] [환불하기] */}
+                    {cancelTarget && !cancelResult && (() => {
+                        const reward = Math.floor(Number(cancelTarget.paymentAmount || 0) / 100);
+                        const rowStyle = { display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '0.9rem' };
+                        return (
+                            <>
+                                <div style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '8px 0', marginBottom: 14 }}>
+                                    <div style={rowStyle}>
+                                        <span>구매 상품</span>
+                                        <strong>{cancelTarget.productName || `채팅 이용권 ${cancelTarget.ticketCount}개`}</strong>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>구매한 이용권</span>
+                                        <span>{cancelTarget.ticketCount}개</span>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>결제 일시</span>
+                                        <span>{formatDateTime(cancelTarget.paidAt || cancelTarget.createdAt)}</span>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>결제 수단</span>
+                                        <span>{formatPayMethod(cancelTarget.paymentMethod)}</span>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>상품 금액</span>
+                                        <span>{Number(cancelTarget.productPrice || 0).toLocaleString()}원</span>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>사용한 마일리지</span>
+                                        <span>{cancelTarget.mileageUsed > 0 ? `${cancelTarget.mileageUsed.toLocaleString()}P` : '-'}</span>
+                                    </div>
+                                    <div style={rowStyle}>
+                                        <span>결제 금액 (환불 금액)</span>
+                                        <strong>{Number(cancelTarget.paymentAmount || 0).toLocaleString()}원</strong>
+                                    </div>
+                                </div>
+
+                                <div style={{ fontSize: '0.85rem', lineHeight: 1.7, marginBottom: 18, opacity: 0.85 }}>
+                                    <div>· 이용권 {cancelTarget.ticketCount}개가 회수됩니다.</div>
+                                    {cancelTarget.mileageUsed > 0 && (
+                                        <div>· 사용한 마일리지 {cancelTarget.mileageUsed.toLocaleString()}P가 반환됩니다.</div>
+                                    )}
+                                    {reward > 0 && (
+                                        <div>· 적립된 마일리지 {reward.toLocaleString()}P가 회수됩니다.</div>
+                                    )}
+                                    <div>· 결제 후 7일 이내, 이용권을 사용하지 않은 경우에만 환불할 수 있습니다.</div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: 10 }}>
+                                    <button
+                                        className={cx('btn-secondary')}
+                                        style={{ flex: 1, padding: '12px 0' }}
+                                        onClick={closeCancelModal}
+                                        disabled={cancelProcessing}
+                                    >
+                                        취소
+                                    </button>
+                                    <button
+                                        className={cx('btn-primary-gradient')}
+                                        style={{ flex: 1, padding: '12px 0', background: '#ef4444', color: '#fff' }}
+                                        onClick={confirmCancelPayment}
+                                        disabled={cancelProcessing}
+                                    >
+                                        {cancelProcessing ? '환불 처리 중...' : '환불하기'}
+                                    </button>
+                                </div>
+                            </>
+                        );
+                    })()}
                 </div>
             </div>
 
