@@ -17,8 +17,8 @@
    HERO
    ========================================================================== */
 .hero {
-  background: var(--honey);
-  border-radius: 0 0 56px 56px;
+  background: transparent;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -69,10 +69,11 @@
 }
 .heroMark {
   display: inline-block;
-  padding: 0 0.12em;
-  border-radius: 0.2em;
-  background: var(--ink);
-  color: var(--honey);
+  padding: 0 0.16em;
+  border-radius: 0.25em;
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(249, 168, 212, 0.4);
 }
 
 .heroDesc { max-width: 520px; font-size: 15px; line-height: 1.7; color: rgba(34, 32, 30, 0.8); }

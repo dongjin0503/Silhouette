@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Client from '../../../api/client';
 import useAuthStore from '../../../stores/useAuthStore';
 import PageHero from '../../../components/PageHero/PageHero';
+import TicketStore from '../../ticket/TicketStore';
 import styles from './mypage.module.css';
 import ob from '../../onboarding/onboarding.module.css';   // 수정 모드 칩 · 입력칸 (온보딩 · 프로필과 같은 모양)
 import {
@@ -470,11 +471,24 @@ function NumberText({ value, onChange, min, max, unit = '', placeholder }) {
 
 /* ---------- 마이페이지 본체 ---------- */
 
-function MyPage() {
+function MyPage({ initialView }) {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // 화면 전환 (첫 화면 = 기본 정보)
-    const [view, setView] = useState('basic');
+    // 화면 전환 (첫 화면 = initialView || location.state?.view || (location.pathname === '/ticket' ? 'ticket' : 'basic'))
+    const [view, setView] = useState(
+        initialView || (location.pathname === '/ticket' ? 'ticket' : location.state?.view || 'basic')
+    );
+
+    useEffect(() => {
+        if (initialView) {
+            setView(initialView);
+        } else if (location.pathname === '/ticket') {
+            setView('ticket');
+        } else if (location.state?.view) {
+            setView(location.state.view);
+        }
+    }, [initialView, location.pathname, location.state?.view]);
 
     // 회원 기본 정보 (MEMBER)
     const [member, setMember] = useState(null);
@@ -552,6 +566,9 @@ function MyPage() {
         setPForm(null);
         setPError('');
         setView(id);
+        if (location.pathname === '/ticket' && id !== 'ticket') {
+            navigate('/mypage', { replace: true });
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -1100,20 +1117,14 @@ function MyPage() {
         <a
             key={m.id}
             className={cx('lnb-item', view === m.id && 'active')}
-            onClick={() => {
-                if (m.id === 'ticket') {
-                    navigate('/ticket');
-                    return;
-                }
-                switchView(m.id);
-            }}
+            onClick={() => switchView(m.id)}
             style={{ cursor: 'pointer' }}
         >
             <div className={cx('lnb-item-left')}>
                 <i className={cx('fa-solid', m.icon)}></i>
                 <span>{m.label}</span>
             </div>
-            {m.code && <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>{m.code}</span>}
+            {m.code && <span style={{ fontSize: '0.72rem', color: view === m.id ? '#ffffff' : 'var(--text-dim)' }}>{m.code}</span>}
         </a>
     );
 
@@ -1195,7 +1206,7 @@ function MyPage() {
                             {region && <span className={cx('badge-pill')}>{region}</span>}
                         </div>
                         <div className={cx('side-asset-box')}>
-                            <div className={cx('side-asset-item')} onClick={() => navigate('/ticket')} style={{ cursor: 'pointer' }} title="이용권 충전하러 가기">
+                            <div className={cx('side-asset-item')} onClick={() => switchView('ticket')} style={{ cursor: 'pointer' }} title="이용권 충전하러 가기">
                                 <span className={cx('side-asset-label')}>채팅 이용권</span>
                                 <span className={cx('side-asset-val')} style={{ color: '#ffd34e' }}>
                                     {wallet ? `${wallet.ticketBalance}개` : '충전'}
@@ -1787,6 +1798,17 @@ function MyPage() {
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {/* ==================== [뷰 8] 이용권 구매 (P001) ==================== */}
+                    {view === 'ticket' && (
+                        <div className={cx('view-section', 'active')}>
+                            <TicketStore
+                                member={member}
+                                wallet={wallet}
+                                onWalletUpdate={(newWallet) => setWallet(newWallet)}
+                            />
                         </div>
                     )}
 

@@ -308,7 +308,7 @@
 .suteraTimerMono {
   padding: 2px 7px;
   background: #161514;
-  color: #ffd34e;
+  color: #f472b6;
   font-weight: 800;
 }
 
@@ -385,7 +385,7 @@
   font-weight: 800;
   letter-spacing: -0.01em;
   color: #161514;
-  background: #ffd34e;
+  background: #f472b6;
   display: inline-block;
   padding: 2px 8px;
   border: 1px solid #161514;
@@ -531,15 +531,15 @@
   position: absolute;
   inset: 11px;
   border-radius: 50%;
-  border: 1.5px solid #ffd34e;
-  background: radial-gradient(circle, rgba(255, 211, 78, 0.35), rgba(255, 255, 255, 0.15) 70%);
+  border: 1.5px solid #f472b6;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.35), rgba(255, 255, 255, 0.15) 70%);
 }
 
 .suteraCardS {
   font-family: 'Archivo Black', 'Pretendard', sans-serif;
   font-size: 32px;
   color: #ffffff;
-  text-shadow: 0 2px 10px rgba(30, 27, 75, 0.5), 0 0 16px rgba(255, 211, 78, 0.9);
+  text-shadow: 0 2px 10px rgba(30, 27, 75, 0.5), 0 0 16px rgba(244, 114, 182, 0.9);
 }
 
 .suteraCardBottomMeta {
@@ -549,7 +549,7 @@
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.04em;
-  color: #ffd34e;
+  color: #f472b6;
   text-shadow: 0 1px 4px rgba(30, 27, 75, 0.5);
 }
 
@@ -557,8 +557,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ffd34e;
-  box-shadow: 0 0 8px #ffd34e;
+  background: #f472b6;
+  box-shadow: 0 0 8px #f472b6;
 }
 
 /* 영상 속 돌 위를 스캔하는 글래스 픽셀 타일 애니메이션 */
@@ -676,7 +676,7 @@
 }
 
 .suteraWaitBtn:hover {
-  background: #ffd34e;
+  background: #f472b6;
   color: #161514;
   transform: translateY(-1px);
 }
@@ -768,7 +768,7 @@
   padding: 22px 22px 18px;
   background:
     radial-gradient(circle at 85% 10%, rgba(99, 102, 241, 0.08), transparent 50%),
-    radial-gradient(circle at 10% 90%, rgba(255, 211, 78, 0.1), transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(244, 114, 182, 0.1), transparent 50%),
     #faf9f5;
   border-bottom: 1px solid var(--hairline);
   position: relative;
@@ -1137,7 +1137,7 @@
   text-align: center;
   position: relative;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 211, 78, 0.22) 0%, transparent 65%),
+    radial-gradient(circle at 50% 0%, rgba(244, 114, 182, 0.22) 0%, transparent 65%),
     #181615;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -1148,8 +1148,8 @@
   gap: 6px;
   padding: 4px 12px;
   border-radius: 9999px;
-  background: rgba(255, 211, 78, 0.15);
-  border: 1px solid rgba(255, 211, 78, 0.35);
+  background: rgba(244, 114, 182, 0.15);
+  border: 1px solid rgba(244, 114, 182, 0.35);
   color: var(--honey);
   font-family: monospace;
   font-size: 10px;
@@ -1165,7 +1165,7 @@
   border-radius: 24px;
   padding: 3px;
   background: linear-gradient(135deg, var(--honey), #ff7555);
-  box-shadow: 0 10px 28px rgba(255, 211, 78, 0.28);
+  box-shadow: 0 10px 28px rgba(244, 114, 182, 0.28);
 }
 
 .foundAvatarInner {
@@ -1266,7 +1266,7 @@
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(255, 211, 78, 0.35);
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.35);
   transition: transform 0.15s ease;
 }
 .voicePlayBtn:active {
@@ -1370,7 +1370,7 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(255, 211, 78, 0.3);
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.3);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 .enterChatBtn:hover {
@@ -1674,7 +1674,7 @@
   flex-shrink: 0;
 }
 .spinHoney {
-  background: rgba(255, 211, 78, 0.2);
+  background: rgba(244, 114, 182, 0.2);
   color: var(--honey);
 }
 .spinIndigo {

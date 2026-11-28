@@ -47,10 +47,14 @@ const HERO_PROFILES = [
 
 
 
-// 매칭 버튼 (9조각 글자 흐름 + 막대 애니메이션)
+// 매칭 버튼 (9조각 글자 흐름 + 3D 팝 입체 강조 + 막대 애니메이션)
 function MatchLoaderButton({ label, variant, onClick }) {
   const measureRef = useRef(null);
   const [wordEm, setWordEm] = useState(5);
+
+  const parts = label.split(' ');
+  const keyword = parts[0]; // "BLIND" or "IDEAL"
+  const rest = parts.slice(1).join(' '); // "MATCHING"
 
   // 문구 길이(em)를 재서 조각 위치 계산에 사용
   useLayoutEffect(() => {
@@ -75,7 +79,23 @@ function MatchLoaderButton({ label, variant, onClick }) {
       <div className={styles.mlLoader} style={{ '--w': `${wordEm}em` }} aria-hidden="true">
         {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className={styles.mlText}>
-            <span ref={i === 4 ? measureRef : undefined}>{label}</span>
+            <span ref={i === 4 ? measureRef : undefined} className={styles.mlSpan}>
+              <span className={styles.mlKeyword}>
+                {keyword.split('').map((char, cIdx) => (
+                  <span
+                    key={cIdx}
+                    className={styles.mlChar}
+                    style={{
+                      '--char-idx': cIdx,
+                      '--char-rev': keyword.length - 1 - cIdx,
+                    }}
+                  >
+                    {char}
+                  </span>
+                ))}
+              </span>
+              <span className={styles.mlRest}>&nbsp;{rest}</span>
+            </span>
           </div>
         ))}
         <div className={styles.mlLine} />
@@ -123,6 +143,18 @@ function Home() {
   const { friendList, myRoomList, friendImageUrls, refreshRooms } = useFriendChat();
   const [profileTargetSeq, setProfileTargetSeq] = useState(null); // 프로필 팝업으로 볼 회원 번호
   const [sidebarChatRoomId, setSidebarChatRoomId] = useState(null);
+
+  // 프로필 모달이 열려있거나 프로필을 보고 있을 때 마퀴 자동 롤링 정지
+  const isMarqueeStopped = Boolean(previewProfile || profileTargetSeq);
+
+  // 프로필 클릭 시 상세/미리보기 모달 열기 (마퀴 정지 트리거)
+  const handleOpenProfile = useCallback((item, isFriend, seq) => {
+    if (isFriend) {
+      setProfileTargetSeq(seq);
+    } else {
+      setPreviewProfile(item);
+    }
+  }, []);
 
   // 실시간 매칭 오버레이 (경과 시간)
   const isMatchingNow = isBlindMatching || isIdealMatching;
@@ -599,65 +631,11 @@ function Home() {
 
   return (
     <div className={styles.page}>
-      {/* 1. 히어로: 중앙 3D 카드 스택 & Silhouette 로고 워드마크 */}
+      {/* 1. 히어로: 몽글몽글 구름 느낌의 Silhouette 워드마크 (프로필 카드 제거) */}
       <section className={styles.hero}>
         <div className={styles.heroStage}>
           <div className={styles.wordmarkWrap}>
             <h1 className={styles.heroWordmark}>Silhouette</h1>
-          </div>
-
-          <div className={styles.cardStage}>
-            {HERO_PROFILES.map((p, i) => {
-              const hasError = heroImageErrors[p.id];
-
-              return (
-                <div
-                  key={p.id}
-                  className={`${styles.stackCard} ${[styles.cardFront, styles.cardMid, styles.cardBack][i]}`}
-                >
-                  {!hasError ? (
-                    <img
-                      src={p.img}
-                      alt={p.name}
-                      onError={() => setHeroImageErrors((prev) => ({ ...prev, [p.id]: true }))}
-                    />
-                  ) : (
-                    <div className={styles.cardFallback}>
-                      <div className={styles.silhouetteAvatar}>
-                        <svg viewBox="0 0 24 24" fill="currentColor" className={styles.silhouetteSvg}>
-                          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                        </svg>
-                      </div>
-                      <span className={styles.cardFallbackInitial}>
-                        {p.name.slice(0, 1)}
-                      </span>
-                    </div>
-                  )}
-                  <div className={styles.cardShade} />
-
-                  {/* 카드 우측 상단 예시 뱃지 */}
-                  <span className={styles.cardSampleBadge}>예시</span>
-
-                  {i === 0 ? (
-                    <>
-                      <span className={styles.cardBadge}>{p.badge}</span>
-                      <div className={styles.cardInfo}>
-                        <div>
-                          <p className={styles.cardName}>{p.name}</p>
-                          <p className={styles.cardSub}>{p.job}</p>
-                        </div>
-                        <span className={styles.cardView}>VIEW</span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className={styles.cardInfoSmall}>
-                      <span className={styles.cardRank}>TOP 0{i + 1}</span>
-                      <p className={styles.cardNameSmall}>{p.name}</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>
@@ -724,7 +702,7 @@ function Home() {
 
             {locationProfiles.length > 0 && (
               <div className={styles.marqueeWrap}>
-                <div className={styles.marqueeTrack}>
+                <div className={`${styles.marqueeTrack} ${isMarqueeStopped ? styles.marqueePaused : ''}`}>
                   {/* 원본 리스트 */}
                   <div className={styles.marqueeGroup}>
                     {marqueeLocationList.map((item, idx) => {
@@ -733,7 +711,12 @@ function Home() {
                       const isFriend = friendSeqSet.has(seq);
 
                       return (
-                        <article key={`loc-1-${seq}-${idx}`} className={styles.flowCard}>
+                        <article
+                          key={`loc-1-${seq}-${idx}`}
+                          className={styles.flowCard}
+                          onClick={() => handleOpenProfile(item, isFriend, seq)}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <div className={styles.flowPhoto}>
                             {photoUrl ? (
                               <img
@@ -788,7 +771,10 @@ function Home() {
                                 <button
                                   type="button"
                                   className={styles.flowPrimaryBtn}
-                                  onClick={() => setProfileTargetSeq(seq)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenProfile(item, isFriend, seq);
+                                  }}
                                 >
                                   프로필 보기
                                 </button>
@@ -797,14 +783,20 @@ function Home() {
                                   <button
                                     type="button"
                                     className={styles.flowPrimaryBtn}
-                                    onClick={() => handleSendFriendRequest(seq)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleSendFriendRequest(seq);
+                                    }}
                                   >
                                     친구 요청
                                   </button>
                                   <button
                                     type="button"
                                     className={styles.flowSecondaryBtn}
-                                    onClick={() => setPreviewProfile(item)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleOpenProfile(item, isFriend, seq);
+                                    }}
                                   >
                                     프로필 보기
                                   </button>
@@ -825,7 +817,12 @@ function Home() {
                       const isFriend = friendSeqSet.has(seq);
 
                       return (
-                        <article key={`loc-2-${seq}-${idx}`} className={styles.flowCard}>
+                        <article
+                          key={`loc-2-${seq}-${idx}`}
+                          className={styles.flowCard}
+                          onClick={() => handleOpenProfile(item, isFriend, seq)}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <div className={styles.flowPhoto}>
                             {photoUrl ? (
                               <img
@@ -880,7 +877,10 @@ function Home() {
                                 <button
                                   type="button"
                                   className={styles.flowPrimaryBtn}
-                                  onClick={() => setProfileTargetSeq(seq)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenProfile(item, isFriend, seq);
+                                  }}
                                 >
                                   프로필 보기
                                 </button>
@@ -889,14 +889,20 @@ function Home() {
                                   <button
                                     type="button"
                                     className={styles.flowPrimaryBtn}
-                                    onClick={() => handleSendFriendRequest(seq)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleSendFriendRequest(seq);
+                                    }}
                                   >
                                     친구 요청
                                   </button>
                                   <button
                                     type="button"
                                     className={styles.flowSecondaryBtn}
-                                    onClick={() => setPreviewProfile(item)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleOpenProfile(item, isFriend, seq);
+                                    }}
                                   >
                                     프로필 보기
                                   </button>

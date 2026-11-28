@@ -139,9 +139,16 @@
 
 .sidebarSmallBtn:hover { background: var(--sand-hover); }
 
-.sidebarPrimaryBtn { background: var(--honey); color: var(--ink); }
+.sidebarPrimaryBtn {
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(249, 168, 212, 0.4);
+}
 
-.sidebarPrimaryBtn:hover { background: var(--honey-bright); }
+.sidebarPrimaryBtn:hover {
+  background: linear-gradient(135deg, #f9a8d4, #f472b6);
+  color: #ffffff;
+}
 
 .sidebarEmpty { padding: 20px 0; text-align: center; font-size: 12px; color: var(--text-muted); }
 

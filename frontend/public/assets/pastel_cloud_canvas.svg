@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- 은은한 파스텔 종이 질감 노이즈 필터 (선 없음, 부드러운 입자감만) -->
+    <filter id="paperGrain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0.98
+        0 0 0 0 0.93
+        0 0 0 0 0.96
+        0 0 0 0.18 0" in="noise" result="coloredNoise"/>
+      <feComposite operator="in" in="coloredNoise" in2="SourceGraphic" result="grain"/>
+      <feBlend mode="multiply" in="SourceGraphic" in2="grain"/>
+    </filter>
+
+    <!-- 몽글몽글 순백 구름 1 (중앙 뽀얀 솜사탕 화이트) -->
+    <radialGradient id="cloudWhite1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="42%" stop-color="#fff5f9" stop-opacity="0.88"/>
+      <stop offset="75%" stop-color="#fde2ec" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#fde2ec" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 몽글몽글 순백 구름 2 (소프트 블러시 화이트) -->
+    <radialGradient id="cloudWhite2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="48%" stop-color="#fff0f6" stop-opacity="0.75"/>
+      <stop offset="80%" stop-color="#fbcfe8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#fbcfe8" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 몽글몽글 베이비 핑크 구름 (따뜻하고 포근한 연분홍) -->
+    <radialGradient id="cloudPinkSoft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbaec5" stop-opacity="0.55"/>
+      <stop offset="45%" stop-color="#fcd5e2" stop-opacity="0.4"/>
+      <stop offset="78%" stop-color="#fff0f5" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#fff0f5" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 몽글몽글 로즈 블러시 구름 (가장자리까지 풍성하게 채워주는 연분홍) -->
+    <radialGradient id="cloudRoseSoft" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fca5be" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#fed7e2" stop-opacity="0.3"/>
+      <stop offset="85%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 바탕 은은한 파스텔 핑크 워시 -->
+    <linearGradient id="baseWash" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffd5e2"/>
+      <stop offset="30%" stop-color="#ffecf2"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="75%" stop-color="#ffeef4"/>
+      <stop offset="100%" stop-color="#fecada"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 1. 바탕 부드러운 파스텔 캔버스 베이스 -->
+  <rect width="1920" height="1080" fill="url(#baseWash)"/>
+
+  <!-- 2. 왼쪽 가장자리 몽글몽글 구름 클러스터 (선 없이 100% 솜사탕 구름) -->
+  <g opacity="0.9">
+    <circle cx="-40" cy="320" r="480" fill="url(#cloudWhite1)" filter="blur(55px)"/>
+    <circle cx="120" cy="480" r="440" fill="url(#cloudPinkSoft)" filter="blur(60px)"/>
+    <circle cx="280" cy="240" r="420" fill="url(#cloudWhite2)" filter="blur(50px)"/>
+    <circle cx="180" cy="620" r="400" fill="url(#cloudRoseSoft)" filter="blur(60px)"/>
+    <ellipse cx="60" cy="400" rx="460" ry="320" fill="url(#cloudWhite1)" filter="blur(55px)"/>
+  </g>
+
+  <!-- 3. 좌측 중간 몽글몽글 구름 클러스터 -->
+  <g opacity="0.92">
+    <circle cx="520" cy="340" r="440" fill="url(#cloudWhite1)" filter="blur(50px)"/>
+    <circle cx="420" cy="540" r="400" fill="url(#cloudPinkSoft)" filter="blur(55px)"/>
+    <circle cx="680" cy="260" r="380" fill="url(#cloudWhite2)" filter="blur(45px)"/>
+    <circle cx="620" cy="500" r="390" fill="url(#cloudRoseSoft)" filter="blur(55px)"/>
+  </g>
+
+  <!-- 4. 화면 중앙 몽글몽글 순백 & 파스텔 구름 (사용자가 만족했던 핵심 솜사탕 영역) -->
+  <g opacity="0.95">
+    <circle cx="960" cy="360" r="500" fill="url(#cloudWhite1)" filter="blur(55px)"/>
+    <ellipse cx="960" cy="280" rx="660" ry="280" fill="url(#cloudWhite1)" filter="blur(50px)"/>
+    <circle cx="820" cy="460" r="430" fill="url(#cloudWhite2)" filter="blur(50px)"/>
+    <circle cx="1100" cy="440" r="440" fill="url(#cloudWhite1)" filter="blur(50px)"/>
+    <circle cx="960" cy="540" r="380" fill="url(#cloudPinkSoft)" filter="blur(60px)"/>
+    <ellipse cx="960" cy="420" rx="580" ry="240" fill="url(#cloudWhite2)" filter="blur(45px)"/>
+  </g>
+
+  <!-- 5. 우측 중간 몽글몽글 구름 클러스터 -->
+  <g opacity="0.92">
+    <circle cx="1320" cy="340" r="440" fill="url(#cloudWhite1)" filter="blur(50px)"/>
+    <circle cx="1450" cy="520" r="400" fill="url(#cloudPinkSoft)" filter="blur(55px)"/>
+    <circle cx="1220" cy="260" r="380" fill="url(#cloudWhite2)" filter="blur(45px)"/>
+    <circle cx="1380" cy="480" r="390" fill="url(#cloudRoseSoft)" filter="blur(55px)"/>
+  </g>
+
+  <!-- 6. 오른쪽 가장자리 몽글몽글 구름 클러스터 (선 없이 100% 솜사탕 구름) -->
+  <g opacity="0.9">
+    <circle cx="1960" cy="320" r="480" fill="url(#cloudWhite1)" filter="blur(55px)"/>
+    <circle cx="1800" cy="480" r="440" fill="url(#cloudPinkSoft)" filter="blur(60px)"/>
+    <circle cx="1640" cy="240" r="420" fill="url(#cloudWhite2)" filter="blur(50px)"/>
+    <circle cx="1740" cy="620" r="400" fill="url(#cloudRoseSoft)" filter="blur(60px)"/>
+    <ellipse cx="1860" cy="400" rx="460" ry="320" fill="url(#cloudWhite1)" filter="blur(55px)"/>
+  </g>
+
+  <!-- 7. 전체 미세 종이 캔버스 질감 오버레이 (물리적 질감감만 살짝 얹음) -->
+  <rect width="1920" height="1080" filter="url(#paperGrain)" fill="#ffffff" opacity="0.25" style="mix-blend-mode: multiply;"/>
+</svg>

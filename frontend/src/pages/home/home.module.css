@@ -12,12 +12,35 @@
 /* ==========================================================================
    1. HERO: 엔진 스타트 스타일 매칭 버튼 / 3D 카드 스택
    ========================================================================== */
+/* ==========================================================================
+   1. HERO: 인위적인 div 테두리 선 없이 손으로 파스텔을 칠한 듯한 구름 배경 & 몽글몽글 워드마크
+   ========================================================================== */
 .hero {
   position: relative;
   width: 100%;
+  min-height: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 60px 20px 40px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* 히어로 중앙 자연스러운 파스텔 핑크·화이트 구름 소프트 글로우 워시 */
+.heroStage {
+  position: relative;
+  width: 100%;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: transparent;
 }
 
 .heroLayout {
@@ -316,17 +339,8 @@
 }
 
 /* ==========================================================================
-   오른쪽: 워드마크 & 3D 프로필 카드 컬럼 (수정 사항 1: 세련된 3D 호버 인터랙션)
+   워드마크 스테이지
    ========================================================================== */
-.heroStage {
-  position: relative;
-  width: 100%;
-  min-height: 440px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .heroStageCol {
   flex: 1;
   position: relative;
@@ -370,25 +384,62 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  overflow: hidden;
-  pointer-events: none;
+  overflow: visible;
+  pointer-events: auto;
   user-select: none;
 }
 
-@keyframes logoEntrance {
-  0% { opacity: 0; transform: scale(0.94); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes heroWordmarkEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.95);
+    filter: drop-shadow(0 0 0 rgba(244, 114, 182, 0)) blur(6px);
+  }
+  60% {
+    opacity: 0.9;
+    filter: drop-shadow(0 8px 24px rgba(244, 114, 182, 0.45)) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 6px 18px rgba(244, 114, 182, 0.4))
+            drop-shadow(0 2px 6px rgba(255, 255, 255, 0.95))
+            drop-shadow(0 14px 40px rgba(236, 72, 153, 0.28));
+  }
 }
 
 .heroWordmark {
-  font-family: 'Archivo Black', 'Pretendard', sans-serif;
-  font-weight: 400;
-  letter-spacing: -0.05em;
-  font-size: clamp(68px, 13vw, 180px);
-  line-height: 1;
-  color: var(--ink);
+  /* 몽글몽글하고 귀여운 라운드 구름 폰트 */
+  font-family: 'Fredoka', 'Comfortaa', 'Pretendard', cursive, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: clamp(64px, 12.5vw, 168px);
+  line-height: 1.1;
   white-space: nowrap;
-  animation: logoEntrance 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: heroWordmarkEntrance 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: auto;
+  cursor: default;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.45s ease;
+
+  /* 뽀얗고 밝은 순백의 하얀 솜사탕/구름 글씨 (호버 시에도 색상 유지) */
+  color: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7fb 65%, #ffdce8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* 몽글몽글 피어나는 소프트 핑크빛 구름 블러 섀도우 */
+  filter: drop-shadow(0 6px 18px rgba(244, 114, 182, 0.4))
+          drop-shadow(0 2px 6px rgba(255, 255, 255, 0.95))
+          drop-shadow(0 14px 40px rgba(236, 72, 153, 0.28));
+}
+
+.heroWordmark:hover {
+  /* 마우스 올리면 색깔은 그대로 두고 구름처럼 위로 살짝 둥실 떠오르는 부드러운 애니메이션 */
+  transform: translateY(-8px) scale(1.035);
+  filter: drop-shadow(0 12px 28px rgba(244, 114, 182, 0.48))
+          drop-shadow(0 2px 8px rgba(255, 255, 255, 1))
+          drop-shadow(0 20px 48px rgba(236, 72, 153, 0.32));
 }
 
 .cardStage {
@@ -420,7 +471,7 @@
   border-radius: 26px;
   overflow: hidden;
   background: var(--ink);
-  box-shadow: 0 24px 50px rgba(34, 32, 30, 0.25);
+  box-shadow: 0 24px 50px rgba(34, 32, 30, 0.18), 0 10px 24px rgba(236, 72, 153, 0.12);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.42s cubic-bezier(0.18, 0.88, 0.26, 1.15),
@@ -744,8 +795,8 @@
   margin-bottom: 4px;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  color: #f472b6;
 }
 
 .sectionTitle {
@@ -763,17 +814,24 @@
 
 .shuffleBtn {
   flex-shrink: 0;
-  padding: 10px 20px;
-  border: 0;
+  padding: 10px 22px;
+  border: 1px solid rgba(244, 114, 182, 0.3);
   border-radius: 9999px;
-  background: var(--sand);
+  background: #ffffff;
   color: var(--ink);
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
-  transition: background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.08);
+  transition: all 0.2s ease;
 }
-.shuffleBtn:hover:not(:disabled) { background: var(--honey); }
+.shuffleBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(249, 168, 212, 0.4);
+  transform: translateY(-1px);
+}
 .shuffleBtn:disabled { opacity: 0.6; cursor: default; }
 
 .locEmpty {
@@ -804,8 +862,9 @@
   will-change: transform;
 }
 
-.marqueeTrack:hover {
-  animation-play-state: paused;
+.marqueeTrack:hover,
+.marqueeTrack.marqueePaused {
+  animation-play-state: paused !important;
 }
 
 .marqueeGroup {
@@ -825,15 +884,17 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: 26px;
-  background: var(--sand);
-  box-shadow: 0 4px 16px rgba(34, 32, 30, 0.06);
-  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.08);
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .flowCard:hover {
-  background: var(--sand-hover);
+  background: #ffffff;
   transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(34, 32, 30, 0.12);
+  border-color: rgba(244, 114, 182, 0.45);
+  box-shadow: 0 16px 36px rgba(244, 114, 182, 0.16);
 }
 
 .flowPhoto {
@@ -905,8 +966,16 @@
   font-weight: 800;
 }
 
-.flowBadgeHoney { background: var(--honey); color: var(--ink); }
-.flowBadgeDark { margin-left: auto; background: rgba(34, 32, 30, 0.85); color: var(--cream); }
+.flowBadgeHoney {
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(249, 168, 212, 0.4);
+}
+.flowBadgeDark {
+  margin-left: auto;
+  background: rgba(46, 35, 41, 0.85);
+  color: #ffffff;
+}
 
 .flowName {
   position: absolute;
@@ -917,7 +986,7 @@
 }
 .flowName h3 { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
 .flowName h3 span { font-weight: 600; opacity: 0.9; }
-.flowName p { margin-top: 2px; font-size: 11px; font-weight: 600; color: var(--honey); }
+.flowName p { margin-top: 2px; font-size: 11px; font-weight: 700; color: #fda4af; }
 
 .flowBody {
   flex: 1;
@@ -955,26 +1024,30 @@
   font-weight: 800;
   cursor: pointer;
   text-align: center;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .flowPrimaryBtn {
-  background: var(--ink);
-  color: var(--cream);
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(249, 168, 212, 0.35);
 }
 .flowPrimaryBtn:hover {
-  background: var(--honey);
-  color: var(--ink);
+  background: linear-gradient(135deg, #f9a8d4, #f472b6);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(249, 168, 212, 0.45);
   transform: translateY(-1px);
 }
 
 .flowSecondaryBtn {
   background: #ffffff;
   color: var(--ink);
-  border: 1px solid var(--hairline);
+  border: 1px solid rgba(244, 114, 182, 0.3);
 }
 .flowSecondaryBtn:hover {
-  background: var(--sand-hover);
+  background: #fff0f5;
+  border-color: #f472b6;
+  color: #f472b6;
   transform: translateY(-1px);
 }
 
@@ -983,7 +1056,16 @@
    ========================================================================== */
 .liveCard {
   cursor: pointer;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.liveCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(244, 114, 182, 0.16);
+  border-color: rgba(244, 114, 182, 0.45);
 }
 
 .liveThumbnailBox {
@@ -1069,10 +1151,11 @@
   bottom: 12px;
   padding: 2px 8px;
   border-radius: 9999px;
-  background: var(--honey);
-  color: var(--ink);
+  background: linear-gradient(135deg, #f472b6, #fb7185);
+  color: #ffffff;
   font-size: 9px;
   font-weight: 800;
+  box-shadow: 0 2px 6px rgba(244, 114, 182, 0.35);
 }
 
 .liveInfoBox {
@@ -1105,8 +1188,9 @@
   width: 100%;
   min-height: 240px;
   border-radius: 26px;
-  background: var(--sand);
-  border: 2px dashed var(--hairline);
+  background: rgba(255, 255, 255, 0.88);
+  border: 2px dashed rgba(244, 114, 182, 0.35);
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1142,20 +1226,20 @@
   padding: 12px 28px;
   border: 0;
   border-radius: 9999px;
-  background: var(--ink);
-  color: var(--cream);
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(34, 32, 30, 0.15);
+  box-shadow: 0 4px 14px rgba(249, 168, 212, 0.35);
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .liveEmptyBtn:hover {
-  background: var(--honey);
-  color: var(--ink);
+  background: linear-gradient(135deg, #f9a8d4, #f472b6);
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(34, 32, 30, 0.2);
+  box-shadow: 0 8px 20px rgba(249, 168, 212, 0.45);
 }
 
 /* ==========================================================================
@@ -1199,10 +1283,10 @@
   width: 100%;
   height: 100%;
   will-change: transform;
-  background: var(--cream);
-  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(244, 114, 182, 0.25);
   border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(34, 32, 30, 0.08);
+  box-shadow: 0 10px 30px rgba(244, 114, 182, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1213,7 +1297,7 @@
   align-items: center;
   justify-content: center; /* 헤더 영역 가운데 정렬 */
   padding: 16px 20px;
-  background: var(--honey);
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
   color: var(--ink);
   flex-shrink: 0;
   text-align: center;
@@ -1262,12 +1346,14 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--honey);
+  background: #ffffff;
+  color: #f472b6;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .friendHeaderTitle {
@@ -1279,8 +1365,7 @@
 .friendHeaderStatus {
   font-size: 11px;
   font-weight: 700;
-  color: var(--ink);
-  opacity: 0.8;
+  color: var(--text-sub);
 }
 
 /* ==========================================================================
@@ -1457,18 +1542,20 @@
   padding: 13px;
   border: 0;
   border-radius: 9999px;
-  background: var(--ink);
-  color: var(--cream);
+  background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 14px rgba(249, 168, 212, 0.35);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .previewActionBtn:hover {
-  background: var(--honey);
-  color: var(--ink);
+  background: linear-gradient(135deg, #f9a8d4, #f472b6);
+  color: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 168, 212, 0.45);
 }
 
 /* ==========================================================================
@@ -1592,9 +1679,9 @@
   width: 100%;
   height: 110px;
   padding: 0;
-  border: 1px solid #22201e;
+  border: 1.5px solid rgba(244, 114, 182, 0.35);
   outline: none;
-  border-radius: 16px;
+  border-radius: 24px;
   font-size: 16px;
   font-family: inherit;
   display: flex;
@@ -1602,13 +1689,15 @@
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
-  background: transparent;
-  box-shadow: none;
-  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.08);
+  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .mlBtn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .mlBtn:active {
@@ -1619,18 +1708,30 @@
   outline: none;
 }
 
-/* 블라인드 매칭: 1px 검정 테두리 + 검정 텍스트 & 하단 라인 */
+/* 블라인드 매칭: 소프트 로즈 잉크 텍스트 & 은은한 핑크 광채 */
 .mlBlind {
-  --text-color: #22201e;
-  --shadow-color: #9e9587;
-  --shine-color: #22201e30;
+  --text-color: #3b2c34;
+  --shadow-color: #f3c2d4;
+  --shine-color: rgba(244, 114, 182, 0.45);
+  --pop-shadow: rgba(244, 114, 182, 0.35);
 }
 
-/* 이상형 매칭: 1px 검정 테두리 + 노란 텍스트 & 하단 라인 */
+.mlBlind:hover {
+  border-color: #f472b6;
+  box-shadow: 0 12px 32px rgba(244, 114, 182, 0.22);
+}
+
+/* 이상형 매칭: 화사한 스트로베리 로즈 텍스트 & 네온 핑크 광채 */
 .mlIdeal {
-  --text-color: #ffd34e;
-  --shadow-color: #c49a1a;
-  --shine-color: #ffd34e55;
+  --text-color: #e11d48;
+  --shadow-color: #fda4af;
+  --shine-color: rgba(251, 113, 133, 0.55);
+  --pop-shadow: rgba(225, 29, 72, 0.45);
+}
+
+.mlIdeal:hover {
+  border-color: #fb7185;
+  box-shadow: 0 12px 32px rgba(251, 113, 133, 0.25);
 }
 
 .mlLoader {
@@ -1647,6 +1748,7 @@
   text-transform: uppercase;
   color: var(--text-color);
   filter: drop-shadow(0 0 0.05em var(--shine-color));
+  perspective: 1000px;
 }
 
 .mlText {
@@ -1657,6 +1759,7 @@
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
 /* 9조각: 가운데가 크고 양옆으로 갈수록 작아짐 (--w = 문구 길이, JS에서 자동 계산) */
@@ -1670,35 +1773,89 @@
 .mlText:nth-child(8) { clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%); font-size: calc(var(--main-size) / 16); margin-left: calc(var(--w) * 0.219);   opacity: 0.7; }
 .mlText:nth-child(9) { clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%);     font-size: calc(var(--main-size) / 20); margin-left: calc(var(--w) * 0.4682);  opacity: 0.6; }
 
-.mlText span {
+.mlSpan {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+  transform-style: preserve-3d;
   animation:
-    mlScroll 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite,
-    mlShadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+    mlScroll 3.6s cubic-bezier(0.12, 0.65, 0.35, 1) infinite,
+    mlShadow 3.6s cubic-bezier(0.12, 0.65, 0.35, 1) infinite;
+}
+
+/* BLIND / IDEAL 중앙 3D 입체 팝 강조 (글자별 dnilb / laedi 순서 순차 확대) */
+.mlKeyword {
+  display: inline-flex;
+  align-items: center;
+  transform-style: preserve-3d;
+}
+
+.mlChar {
+  display: inline-block;
+  will-change: transform, filter, text-shadow;
+  transform-style: preserve-3d;
+  animation: mlCharPop 3.6s cubic-bezier(0.2, 0.75, 0.35, 1) infinite;
+  animation-delay: calc(var(--char-rev) * 0.12s);
+}
+
+@keyframes mlCharPop {
+  0%, 34% {
+    transform: scale(1) translateY(0) translateZ(0);
+    filter: none;
+    text-shadow: none;
+  }
+  42% {
+    /* dnilb 및 laedi 역순 순서대로 글자가 가운데에 올 때 살짝 커지면서 3D 입체 강조 */
+    transform: scale(1.26) translateY(-2px) translateZ(24px);
+    filter: drop-shadow(0 3px 8px var(--pop-shadow)) drop-shadow(0 0 12px var(--shine-color));
+    text-shadow: 
+      0 1px 0 rgba(255, 255, 255, 0.95),
+      0 2px 2px rgba(244, 114, 182, 0.7),
+      0 0 16px var(--shine-color);
+  }
+  50% {
+    transform: scale(1) translateY(0) translateZ(0);
+    filter: none;
+    text-shadow: none;
+  }
+  100% {
+    transform: scale(1) translateY(0) translateZ(0);
+    filter: none;
+    text-shadow: none;
+  }
+}
+
+.mlRest {
+  display: inline-block;
+  opacity: 0.78;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 /* 조각별 명암 그라데이션 */
-.mlText:nth-child(1) span,
-.mlText:nth-child(2) span,
-.mlText:nth-child(3) span,
-.mlText:nth-child(4) span,
-.mlText:nth-child(6) span,
-.mlText:nth-child(7) span,
-.mlText:nth-child(8) span,
-.mlText:nth-child(9) span {
+.mlText:nth-child(1) .mlSpan,
+.mlText:nth-child(2) .mlSpan,
+.mlText:nth-child(3) .mlSpan,
+.mlText:nth-child(4) .mlSpan,
+.mlText:nth-child(6) .mlSpan,
+.mlText:nth-child(7) .mlSpan,
+.mlText:nth-child(8) .mlSpan,
+.mlText:nth-child(9) .mlSpan {
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.mlText:nth-child(1) span { background-image: linear-gradient(to right, var(--text-color) 4%,  var(--shadow-color) 7%); }
-.mlText:nth-child(2) span { background-image: linear-gradient(to right, var(--text-color) 9%,  var(--shadow-color) 13%); }
-.mlText:nth-child(3) span { background-image: linear-gradient(to right, var(--text-color) 15%, var(--shadow-color) 18%); }
-.mlText:nth-child(4) span { background-image: linear-gradient(to right, var(--text-color) 20%, var(--shadow-color) 23%); }
-.mlText:nth-child(6) span { background-image: linear-gradient(to right, var(--shadow-color) 29%, var(--text-color) 32%); }
-.mlText:nth-child(7) span { background-image: linear-gradient(to right, var(--shadow-color) 34%, var(--text-color) 37%); }
-.mlText:nth-child(8) span { background-image: linear-gradient(to right, var(--shadow-color) 39%, var(--text-color) 42%); }
-.mlText:nth-child(9) span { background-image: linear-gradient(to right, var(--shadow-color) 45%, var(--text-color) 48%); }
+.mlText:nth-child(1) .mlSpan { background-image: linear-gradient(to right, var(--text-color) 4%,  var(--shadow-color) 7%); }
+.mlText:nth-child(2) .mlSpan { background-image: linear-gradient(to right, var(--text-color) 9%,  var(--shadow-color) 13%); }
+.mlText:nth-child(3) .mlSpan { background-image: linear-gradient(to right, var(--text-color) 15%, var(--shadow-color) 18%); }
+.mlText:nth-child(4) .mlSpan { background-image: linear-gradient(to right, var(--text-color) 20%, var(--shadow-color) 23%); }
+.mlText:nth-child(6) .mlSpan { background-image: linear-gradient(to right, var(--shadow-color) 29%, var(--text-color) 32%); }
+.mlText:nth-child(7) .mlSpan { background-image: linear-gradient(to right, var(--shadow-color) 34%, var(--text-color) 37%); }
+.mlText:nth-child(8) .mlSpan { background-image: linear-gradient(to right, var(--shadow-color) 39%, var(--text-color) 42%); }
+.mlText:nth-child(9) .mlSpan { background-image: linear-gradient(to right, var(--shadow-color) 45%, var(--text-color) 48%); }
 
 /* 아래 막대 */
 .mlLine {
@@ -1730,7 +1887,7 @@
   border-radius: 0.05em;
   background-color: var(--text-color);
   transform: translateX(-90%);
-  animation: mlWobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
+  animation: mlWobble 3.6s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
 }
 
 @keyframes mlWobble {
@@ -1747,6 +1904,13 @@
 @keyframes mlShadow {
   0%   { background-position: -98% 0; }
   100% { background-position: 102% 0; }
+}
+
+@media (max-width: 480px) {
+  .mlBtn {
+    height: 110px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {

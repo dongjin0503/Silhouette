@@ -1,32 +1,97 @@
+import { useState, useEffect } from 'react';
 import useAuthStore from '../../stores/useAuthStore';
 import MainNav from '../MainNav/MainNav';
 import styles from './PageHero.module.css';
 
 /* =========================================================
-   공통 페이지 히어로 (라이브 · 게시판 · 이벤트)
-   - 홈 히어로와 같은 허니 옐로 띠를 헤더 뒤부터 히어로 바닥까지 화면 가로 전체로 깔아줌
-   - 세 페이지의 띠 높이를 같게 맞추고, 홈처럼 띠 아래 경계에 페이지 이동 바(MainNav)를 걸쳐 놓음
-     (로그인 상태에서만. 이 히어로가 있으면 레이아웃 헤더의 이동 바는 숨김)
-   - eyebrow: 제목 위 검정 칩 문구 / live: 칩에 빨간 ON AIR 점 표시
-   - title, description: 제목과 소개 문구
-   - wordmark: 오른쪽 큰 영문 워드마크 (홈 Silhouette 로고와 같은 서체, 모바일에서는 숨김)
-   - children: 소개 문구 아래에 놓일 버튼·통계 등 (버튼은 heroButton.js의 클래스 사용)
+   공통 페이지 히어로 (라이브 · 게시판 · 이벤트 · 마이페이지)
+   - description: Silhouette 로고 서체의 순백 타이핑 텍스트
+   - 타이핑이 완료된 후에도 사라지지 않고 영구 고정 노출
    ========================================================= */
 export default function PageHero({ eyebrow, live = false, title, description, wordmark, children }) {
   const token = useAuthStore((state) => state.token);
+  const [visibleCount, setVisibleCount] = useState(0);
+
+  useEffect(() => {
+    if (!description) {
+      setVisibleCount(0);
+      return;
+    }
+
+    // 모션 감소 설정 시 즉시 전체 표시
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      setVisibleCount(description.length);
+      return;
+    }
+
+    // 초기 타이핑 시작
+    setVisibleCount(0);
+    let current = 0;
+    const total = description.length;
+
+    const timer = setInterval(() => {
+      current += 1;
+      setVisibleCount(current);
+      if (current >= total) {
+        clearInterval(timer);
+      }
+    }, 28);
+
+    return () => clearInterval(timer);
+  }, [description]);
+
+  // 한 글자씩 타이핑되듯 순차적으로 나타나며, 타이핑 후 영구 고정 유지
+  const renderTypedDescription = () => {
+    if (!description) return null;
+    const words = description.split(' ');
+    let globalCharIndex = 0;
+
+    return words.map((word, wIdx) => {
+      const wordChars = word.split('');
+      const wordStartIndex = globalCharIndex;
+      globalCharIndex += wordChars.length + 1; // 단어 글자수 + 공백 1칸
+
+      return (
+        <span key={wIdx} className={styles.wordGroup}>
+          <span className={styles.word}>
+            {wordChars.map((char, cIdx) => {
+              const charIdx = wordStartIndex + cIdx;
+              const isVisible = charIdx < visibleCount;
+              return (
+                <span
+                  key={cIdx}
+                  className={isVisible ? styles.charVisible : styles.charHidden}
+                >
+                  {char}
+                </span>
+              );
+            })}
+          </span>
+          {wIdx < words.length - 1 && (
+            <span
+              className={
+                wordStartIndex + wordChars.length < visibleCount
+                  ? styles.charVisible
+                  : styles.charHidden
+              }
+            >
+              {' '}
+            </span>
+          )}
+        </span>
+      );
+    });
+  };
 
   return (
     <section className={styles.hero} data-page-hero="">
       <div className={styles.body}>
-        <div className={styles.text}>
-          {eyebrow && (
-            <span className={styles.chip}>
-              {live && <span className={styles.liveDot} aria-hidden="true" />}
-              {eyebrow}
-            </span>
+        <div className={`${styles.text} ${children ? styles.textWithExtra : ''}`}>
+          {description && (
+            <p className={styles.description} aria-label={description}>
+              <span aria-hidden="true">{renderTypedDescription()}</span>
+            </p>
           )}
-          <h1 className={styles.title}>{title}</h1>
-          {description && <p className={styles.description}>{description}</p>}
           {children && <div className={styles.extra}>{children}</div>}
         </div>
         {wordmark && (

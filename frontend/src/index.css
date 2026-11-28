@@ -1,49 +1,48 @@
 :root {
-  /* [Bumble 스타일: 허니 옐로 + 웜 크림 + 에스프레소 잉크] (핑크/보라 계열 제거) */
-  --honey: #ffd34e;
-  --honey-bright: #ffe074;
-  --cream: #fffdf6;
-  --sand: #f7f3e6;
-  --sand-hover: #efe9d8;
-  --ink: #22201e;
-  --ink-hover: #383531;
-  --hairline: #e7e0ce;
+  /* [파스텔 블러시 핑크 & 소프트 로즈 에스프레소 테마] */
+  --honey: #f9a8d4;
+  --honey-bright: #fbcfe8;
+  --cream: #fff8fb;
+  --sand: #ffffff;
+  --sand-hover: #fdf2f7;
+  --ink: #2e2329;
+  --ink-hover: #45353e;
+  --hairline: rgba(244, 114, 182, 0.22);
 
-  --bg-gradient: #fffdf6;
-  --bg-aurora: none;
-  --header-bg: #ffffff;
-  --card-bg: #f7f3e6;
-  --card-border: #e7e0ce;
-  --primary-gradient: linear-gradient(#22201e, #22201e);
-  --primary-hover: linear-gradient(#383531, #383531);
-  --accent-pink: #7a5c00;
-  --accent-purple: #5c5549;
-  --accent-blue: #5c5549;
-  --text-main: #22201e;
-  --text-sub: #5c5549;
-  --text-muted: #8a8173;
+  --bg-gradient: #fffafc;
+  --bg-aurora: radial-gradient(circle, rgba(251, 207, 232, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+  --header-bg: rgba(255, 255, 255, 0.88);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-border: rgba(244, 114, 182, 0.25);
+  --primary-gradient: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+  --primary-hover: linear-gradient(135deg, #f9a8d4, #f472b6);
+  --accent-pink: #f9a8d4;
+  --accent-purple: #c084fc;
+  --accent-blue: #818cf8;
+  --text-main: #2e2329;
+  --text-sub: #6e5d66;
+  --text-muted: #9e8d96;
   --input-bg: #ffffff;
-  --input-border: #e7e0ce;
+  --input-border: rgba(244, 114, 182, 0.35);
   --input-focus-bg: #ffffff;
-  --cell-bg: #f7f3e6;
-  --cell-border: #e7e0ce;
-  --terms-card-bg: #f7f3e6;
-  --terms-box-bg: #fffdf6;
-  --profile-card-bg: #fff1c2;
-  --success: #1f9d6b;
-  --error: #d64545;
+  --cell-bg: rgba(255, 255, 255, 0.9);
+  --cell-border: rgba(244, 114, 182, 0.2);
+  --terms-card-bg: rgba(255, 255, 255, 0.9);
+  --terms-box-bg: #fff8fb;
+  --profile-card-bg: #fff0f5;
+  --success: #10b981;
+  --error: #f43f5e;
   --radius-sm: 12px;
   --radius-md: 20px;
   --radius-lg: 26px;
   --glass-reflect: 0 0 0 transparent;
-  --glass-shadow: 0 6px 20px rgba(34, 32, 30, 0.06);
-  --shadow-glow: 0 0 0 transparent;
-  --card-shadow: 0 6px 20px rgba(34, 32, 30, 0.06);
+  --glass-shadow: 0 6px 20px rgba(244, 114, 182, 0.08);
+  --shadow-glow: 0 0 20px rgba(244, 114, 182, 0.25);
+  --card-shadow: 0 8px 24px rgba(244, 114, 182, 0.08);
 }
 
-/* 기존 라이트/다크 토글은 유지하되 동일한 Bumble 팔레트를 사용합니다. */
 body.theme-light {
-  --bg-gradient: #fffdf6;
+  --bg-gradient: #fffafc;
 }
 
 * {
@@ -54,8 +53,14 @@ body.theme-light {
 
 body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  background: var(--bg-gradient);
-  background-attachment: fixed;
+  background-color: #ffffff;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.90)),
+    url('/assets/hero_brush_pink.jpg');
+  background-size: cover, cover;
+  background-position: center top, center center;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
   color: var(--text-main);
   min-height: 100vh;
   transition: background 0.4s ease, color 0.3s ease;
@@ -63,8 +68,8 @@ body {
 }
 
 ::selection {
-  background: var(--ink);
-  color: var(--honey);
+  background: #f472b6;
+  color: #ffffff;
 }
 
 @keyframes fadeIn {

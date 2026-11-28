@@ -319,8 +319,18 @@ function Layout() {
     .filter((item) => item && typeof item === 'object')
     .filter((item) => !hiddenNotificationIds.includes(item.notification_seq ?? item.notificationSeq));
 
+  const isHeroPage =
+    location.pathname === '/' ||
+    location.pathname === '/home' ||
+    location.pathname.startsWith('/event') ||
+    location.pathname.startsWith('/live') ||
+    location.pathname.startsWith('/post') ||
+    location.pathname.startsWith('/board') ||
+    location.pathname === '/mypage' ||
+    location.pathname === '/ticket';
+
   return (
-    <div className={`${styles.appContainer} ${location.pathname === '/' ? styles.homeMode : ''} ${token ? styles.loggedIn : ''}`}>
+    <div className={`${styles.appContainer} ${isHeroPage ? styles.homeMode : ''} ${token ? styles.loggedIn : ''}`}>
       {/* 
         상단바 2개를 같은 한 열에 배치하는 헤더 행
         - 좌측: 메인 네비게이션 상단바 (하단 매칭 모드 선택과 동일한 왼쪽 정렬)
